@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: externalname-svc-httpd
+subsets:
+  - addresses:
+    - ip: 10.65.40.20
+    ports:
+    - port: 80
