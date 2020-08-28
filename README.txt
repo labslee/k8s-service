@@ -247,3 +247,4 @@ spec:
 [root@tylee-k8s-01 service_back]# kubectl get svc externalip-svc
 
 브라우저에서 external ip 로 호출
+
