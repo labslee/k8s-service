@@ -1,4 +1,4 @@
-기초 - nginx 서비스가 올라가 있는 상태
+기초 - nginx 파드가 올라가 있는 상태
 # nginx 생성
 kubectl create deployment nginx --image=nginx
 # 생성된 nginx 보기
