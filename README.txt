@@ -9,7 +9,6 @@ kubectl get po --show-labels
 kubectl scale deployment --replicas=2 nginx
 
 
-
 1. 서비스(Service)
 서비스는 지정된 IP로 생성이 가능하고, 여러 Pod를 묶어서 로드 밸런싱이 가능하며, 고유한 DNS 이름을 가질 수 있다.
 
@@ -17,7 +16,13 @@ kubectl scale deployment --replicas=2 nginx
 Pod의 경우 지정되는 IP가 랜덤하고 리스타트 때마다 변경되기 때문에 고정된 endpoint로 호출이 어렵다.
 또한 여러 Pod에 같은 어플리케이션을 운용할 경우 이 Pod간의 로드밸런싱을 지원해줘야 하는데, Service가 이러한 역할을 한다.
 
-3. 구성방법
+3. 서비스 타입(Service Type)
+Cluster IP (default)
+Load Balancer
+Node IP(nodeport)
+External name
+
+4. 타입별 구성방법
 서비스는 다음과 같이 구성이 가능하며, 라벨 셀렉터 (label selector)를 이용하여, 관리하고자 하는 Pod들을 정의할 수 있다.
 # pod의 LABELS 정보
 [root@tylee-k8s-01 ~]# kubectl get po --show-labels
@@ -30,7 +35,9 @@ nginx-f89759699-xm5bq   1/1     Running   0          9s     app=nginx,pod-templa
 NAME    READY   UP-TO-DATE   AVAILABLE   AGE     LABELS
 nginx   2/2     2            2           9m27s   app=nginx
 
-# 로드밸런싱
+Cluster IP
+디폴트 설정으로, 서비스에 클러스터 IP (내부 IP)를 할당한다. 쿠버네티스 클러스터 내에서는 이 서비스에 접근이 가능하지만, 클러스터 외부에서는 외부 IP를 할당 받지 못했기 때문에 접근이 불가능하다.
+# Cluster IP
 [root@tylee-k8s-01 ~]# vim svc.yaml
 apiVersion: v1
 kind: Service
@@ -46,9 +53,10 @@ spec:
 
 [root@tylee-k8s-01 ~]# kubectl create -f svc.yaml
 service/nginx-svc-1 created
-[root@tylee-k8s-01 ~]# kubectl get svc -o wide nginx-svc-1
+
+[root@tylee-k8s-01 ~]# kubectl get svc -o wide nginx-svc
 NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE   SELECTOR
-nginx-svc-1   ClusterIP   10.109.241.161   <none>        80/TCP    15s   app=nginx
+nginx-svc   ClusterIP   10.109.241.161   <none>        80/TCP    15s   app=nginx
 
 [root@tylee-k8s-01 ~]# curl 10.109.241.161
 
@@ -63,20 +71,12 @@ spec:
 
 웹에서 HTTP Session을 사용하는 경우와 같이 각 서버에 각 클라이언트의 상태정보가 저장되어 있는 경우에 유용하게 사용할 수 있다.
 
-서비스 타입(Service Type)
-Cluster IP (default)
-Load Balancer
-Node IP
-External name
-
-Cluster IP
-디폴트 설정으로, 서비스에 클러스터 IP (내부 IP)를 할당한다. 쿠버네티스 클러스터 내에서는 이 서비스에 접근이 가능하지만, 클러스터 외부에서는 외부 IP를 할당 받지 못했기 때문에 접근이 불가능하다.
-
 Load Balancer
 보통 클라우드 벤더에서 제공하는 설정 방식으로, 외부 IP를 가지고 있는 로드밸런서를 할당한다. 외부 IP를 가지고 있기 때문에 클러스터 외부에서 접근이 가능하다.
+테스트를 위해서는 외부 로드밸런서가 필요하므로 추후 테스트 예정.
 
 NodePort (30000-32767)
-클러스터 IP로만 접근이 가능한 것이 아니라, 모든 노드의 IP와 포트를 통해서도 접근이 가능하게 된다.
+클러스터 IP로만 접근이 가능한 것이 아니라, 모든 노드의(master, worker) IP와 포트를 통해서도 접근이 가능하게 된다.
 예를 들어 아래와 같이 nginx-nodeport-svc-1 이라는 서비스를 NodePort 타입으로 선언을 하고, NodePort를 30001으로 설정하면, 아래 설정에 따라 클러스터 IP의 80포트로도 접근이 가능하지만, 모든 노드의 30036 포트로도 서비스를 접근할 수 있다.
 
 [root@tylee-k8s-01 ~]# vim nodeport-svc.yaml
