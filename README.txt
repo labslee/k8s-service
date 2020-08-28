@@ -77,7 +77,7 @@ Load Balancer
 
 NodePort (30000-32767)
 클러스터 IP로만 접근이 가능한 것이 아니라, 모든 노드의(master, worker) IP와 포트를 통해서도 접근이 가능하게 된다.
-예를 들어 아래와 같이 nginx-nodeport-svc-1 이라는 서비스를 NodePort 타입으로 선언을 하고, NodePort를 30001으로 설정하면, 아래 설정에 따라 클러스터 IP의 80포트로도 접근이 가능하지만, 모든 노드의 30036 포트로도 서비스를 접근할 수 있다.
+예를 들어 아래와 같이 nginx-nodeport-svc 이라는 서비스를 NodePort 타입으로 선언을 하고, NodePort를 30001으로 설정하면, 아래 설정에 따라 클러스터 IP의 80포트로도 접근이 가능하지만, 모든 노드의 30001 포트로도 서비스를 접근할 수 있다.
 
 [root@tylee-k8s-01 ~]# vim nodeport-svc.yaml
 apiVersion: v1
@@ -107,7 +107,7 @@ ExternalName
 ExternalName은 외부 서비스를 쿠버네티스 내부에서 호출하고자 할때 사용할 수 있다.
 쿠버네티스 클러스터 내의 Pod들은 클러스터 IP를 가지고 있기 때문에 클러스터 IP 대역 밖의 서비스를 호출하고자 하면, NAT 설정등 복잡한 설정이 필요하다.
 특히 AWS나 GCP와 같은 클라우드 환경을 사용할 경우 데이터베이스나 클라우드에서 제공되는 매니지드 서비스(RDS, CloudSQL)등을 사용하고자 할 경우에는 쿠버네티스 클러스터 밖이기 때문에 호출이 어려운 경우가 있는데, 이를 쉽게 해결할 수 있는 방법이 ExternalName 타입이다.
-아래와 같이 서비스를 ExternalName 타입으로 설정하고, 주소를 DNS로 k8s.service.com으로 설정해주면 nginx-externalname-svc-1 는 들어오는 모든 요청을 k8s.service.com 으로 포워딩 해준다. (일종의 프록시와 같은 역할)
+아래와 같이 서비스를 ExternalName 타입으로 설정하고, 주소를 DNS로 k8s.service.com으로 설정해주면 nginx-externalname-svc 는 들어오는 모든 요청을 k8s.service.com 으로 포워딩 해준다. (일종의 프록시와 같은 역할)
 
 # 테스트 시 web서버 필요
 # DNS를 이용하는 방식
