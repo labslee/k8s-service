@@ -76,7 +76,7 @@ Load Balancer
 테스트를 위해서는 외부 로드밸런서가 필요하므로 추후 테스트 예정.
 
 NodePort (30000-32767)
-클러스터 IP로만 접근이 가능한 것이 아니라, 모든 노드의(master, worker) IP와 포트를 통해서도 접근이 가능하게 된다.
+NodePort를 이용하면 클러스터 IP로만 접근이 가능한 것이 아니라, 모든 노드의(master, worker) IP와 포트를 통해서도 접근이 가능하게 된다.
 예를 들어 아래와 같이 nginx-nodeport-svc 이라는 서비스를 NodePort 타입으로 선언을 하고, NodePort를 30001으로 설정하면, 아래 설정에 따라 클러스터 IP의 80포트로도 접근이 가능하지만, 모든 노드의 30001 포트로도 서비스를 접근할 수 있다.
 
 [root@tylee-k8s-01 ~]# vim nodeport-svc.yaml
